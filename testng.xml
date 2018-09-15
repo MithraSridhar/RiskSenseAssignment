@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<!-- <suite name="Opentaps" parallel="classes" thread-count="3" verbose="5"> -->
+<suite name="Opentaps" parallel="none" thread-count="2" verbose="5">
+	<test name="Leads">
+		<classes>
+			<!-- <class name="testcases.CreateLead" />
+			<class name="testcases.EditLead" />
+			<class name="testcases.DeleteLead" />	 -->
+			<class name="keyword.RunKeywordScripts"/>		
+		</classes>
+	</test> <!-- Test -->
+</suite> <!-- Suite -->

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" verbose="5" name="Failed suite [Suite]" parallel="classes">
+  <test name="Test(failed)" parallel="classes">
+    <classes>
+      <class name="testcases.CreateLead">
+        <methods>
+          <include name="beforeTest"/>
+          <include name="afterMethod"/>
+          <include name="afterSuite"/>
+          <include name="beforeSuite"/>
+          <include name="afterTest"/>
+          <include name="beforeMethod"/>
+          <include name="setData"/>
+        </methods>
+      </class> <!-- testcases.CreateLead -->
+      <class name="testcases.MergeLead">
+        <methods>
+          <include name="setData"/>
+          <include name="afterMethod"/>
+          <include name="beforeMethod"/>
+          <include name="ML"/>
+        </methods>
+      </class> <!-- testcases.MergeLead -->
+      <class name="testcases.DuplicateLead">
+        <methods>
+          <include name="afterMethod"/>
+          <include name="setData"/>
+          <include name="beforeMethod"/>
+        </methods>
+      </class> <!-- testcases.DuplicateLead -->
+      <class name="testcases.EditLead">
+        <methods>
+          <include name="afterMethod"/>
+          <include name="beforeMethod"/>
+          <include name="setData"/>
+        </methods>
+      </class> <!-- testcases.EditLead -->
+      <class name="testcases.DeleteLead">
+        <methods>
+          <include name="afterMethod"/>
+          <include name="beforeMethod"/>
+          <include name="setData"/>
+        </methods>
+      </class> <!-- testcases.DeleteLead -->
+    </classes>
+  </test> <!-- Test(failed) -->
+</suite> <!-- Failed suite [Suite] -->
