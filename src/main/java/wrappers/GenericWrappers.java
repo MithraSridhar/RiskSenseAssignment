@@ -11,17 +11,21 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.relevantcodes.extentreports.ExtentTest;
 
@@ -36,7 +40,7 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 
 	public RemoteWebDriver driver;
 	protected static Properties prop;
-	public String sUrl,primaryWindowHandle,sHubUrl,sHubPort,username,password;
+	public String sUrl,primaryWindowHandle,sHubUrl,sHubPort,username,password,gusername,gpassword;
 
 	public GenericWrappers() {
 		Properties prop = new Properties();
@@ -54,6 +58,8 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 			prop.load(new FileInputStream(new File("./src/main/resources/config.properties")));
 			username = prop.getProperty("UN");
 			password = prop.getProperty("PW");
+			gusername = prop.getProperty("GUN");
+			gpassword = prop.getProperty("GPW");
 		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -117,7 +123,7 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 					System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
 					driver = new ChromeDriver();
 				}else{
-					System.setProperty("webdriver.gecko.driver", "./drivers/geckodriver.exe");
+					System.setProperty("webdriver.gecko.driver", "./drivers/geckodriver_64 bit.exe");
 					driver = new FirefoxDriver();
 				}
 			}
@@ -147,13 +153,13 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 
 	public void enterById(String idValue, String data) {
 		try {
-			driver.findElement(By.id(idValue)).clear();
-			driver.findElement(By.id(idValue)).sendKeys(data);	
-			reportStep("The data: "+data+" entered successfully in field :"+idValue, "PASS");
+			driver.findElement(By.id(prop.getProperty(idValue))).clear();
+			driver.findElement(By.id(prop.getProperty(idValue))).sendKeys(data);	
+			reportStep("The data: "+data+" entered successfully in field :"+prop.getProperty(idValue), "PASS");
 		} catch (NoSuchElementException e) {
-			reportStep("The data: "+data+" could not be entered in the field :"+idValue, "FAIL");
+			reportStep("The data: "+data+" could not be entered in the field :"+prop.getProperty(idValue), "FAIL");
 		} catch (Exception e) {
-			reportStep("Unknown exception occured while entering "+data+" in the field :"+idValue, "FAIL");
+			reportStep("Unknown exception occured while entering "+data+" in the field :"+prop.getProperty(idValue), "FAIL");
 		}
 	}
 
@@ -168,18 +174,41 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void enterByName(String nameValue, String data) {
 		try {
-			driver.findElement(By.name(nameValue)).clear();
-			driver.findElement(By.name(nameValue)).sendKeys(data);	
-			reportStep("The data: "+data+" entered successfully in field :"+nameValue, "PASS");
+			driver.findElement(By.name(prop.getProperty(nameValue))).clear();
+			driver.findElement(By.name(prop.getProperty(nameValue))).sendKeys(data);	
+			reportStep("The data: "+data+" entered successfully in field :"+prop.getProperty(nameValue), "PASS");
 
 		} catch (NoSuchElementException e) {
-			reportStep("The data: "+data+" could not be entered in the field :"+nameValue, "FAIL");
+			reportStep("The data: "+data+" could not be entered in the field :"+prop.getProperty(nameValue), "FAIL");
 		} catch (Exception e) {
-			reportStep("Unknown exception occured while entering "+data+" in the field :"+nameValue, "FAIL");
+			reportStep("Unknown exception occured while entering "+data+" in the field :"+prop.getProperty(nameValue), "FAIL");
 		}
 
 	}
 
+	/**
+	 * This method will enter the value to the text field using Classname attribute to locate
+	 * 
+	 * @param ClassnameValue - name of the webelement
+	 * @param data - The data to be sent to the webelement
+	 * @author Mithra 
+	 * @throws IOException 
+	 * @throws COSVisitorException 
+	 */
+	public void enterByClassName(String nameValue, String data) {
+		try {
+			driver.findElement(By.className(prop.getProperty(nameValue))).clear();
+			driver.findElement(By.className(prop.getProperty(nameValue))).sendKeys(data);	
+			reportStep("The data: "+data+" entered successfully in field :"+prop.getProperty(nameValue), "PASS");
+
+		} catch (NoSuchElementException e) {
+			reportStep("The data: "+data+" could not be entered in the field :"+prop.getProperty(nameValue), "FAIL");
+		} catch (Exception e) {
+			reportStep("Unknown exception occured while entering "+data+" in the field :"+prop.getProperty(nameValue), "FAIL");
+		}
+
+	}
+	
 	/**
 	 * This method will enter the value to the text field using name attribute to locate
 	 * 
@@ -191,15 +220,39 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void enterByXpath(String xpathValue, String data) {
 		try {
-			driver.findElement(By.xpath(xpathValue)).clear();
-			driver.findElement(By.xpath(xpathValue)).sendKeys(data);	
-			reportStep("The data: "+data+" entered successfully in field :"+xpathValue, "PASS");
+			driver.findElement(By.xpath(prop.getProperty(xpathValue))).clear();
+			driver.findElement(By.xpath(prop.getProperty(xpathValue))).sendKeys(data);	
+			reportStep("The data: "+data+" entered successfully in field :"+prop.getProperty(xpathValue), "PASS");
 
 		} catch (NoSuchElementException e) {
-			reportStep("The data: "+data+" could not be entered in the field :"+xpathValue, "FAIL");
+			reportStep("The data: "+data+" could not be entered in the field :"+prop.getProperty(xpathValue), "FAIL");
 		} catch (Exception e) {
-			reportStep("Unknown exception occured while entering "+data+" in the field :"+xpathValue, "FAIL");
+			reportStep("Unknown exception occured while entering "+data+" in the field :"+prop.getProperty(xpathValue), "FAIL");
 		}
+
+	}
+	/**
+	 * This method will enter the value to the text field using name attribute to locate
+	 * 
+	 * @param xpathValue - xpathValue of the webelement
+	 * @param data - The data to be sent to the webelement
+	 * @author Mithra 
+	 * @throws IOException 
+	 * @throws COSVisitorException 
+	 */
+	public WebElement findByXpath(String xpathValue) {
+		WebElement element = null ;
+		try {
+			 element =driver.findElement(By.xpath(prop.getProperty(xpathValue)));
+			//driver.findElement(By.xpath(prop.getProperty(xpathValue))).sendKeys(data);	
+			reportStep("The element found :"+prop.getProperty(xpathValue), "PASS");
+
+		} catch (NoSuchElementException e) {
+			reportStep("The element:"+prop.getProperty(xpathValue), "FAIL");
+		} catch (Exception e) {
+			reportStep("Unknown exception occured while finding the element :"+prop.getProperty(xpathValue), "FAIL");
+		}
+		return element;
 
 	}
 
@@ -211,11 +264,11 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	public boolean verifyTitle(String title){
 		boolean bReturn = false;
 		try{
-			if (driver.getTitle().equalsIgnoreCase(title)){
-				reportStep("The title of the page matches with the value :"+title, "PASS");
+			if (driver.getTitle().contains(prop.getProperty(title))){
+				reportStep("The title of the page matches with the value :"+prop.getProperty(title), "PASS");
 				bReturn = true;
 			}else
-				reportStep("The title of the page:"+driver.getTitle()+" did not match with the value :"+title, "SUCCESS");
+				reportStep("The title of the page:"+driver.getTitle()+" did not match with the value :"+prop.getProperty(title), "SUCCESS");
 
 		}catch (Exception e) {
 			reportStep("Unknown exception occured while verifying the title", "FAIL");
@@ -231,7 +284,7 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void verifyTextByXpath(String xpath, String text){
 		try {
-			String sText = driver.findElementByXPath(xpath).getText();
+			String sText = driver.findElementByXPath(prop.getProperty(xpath)).getText();
 			if (sText.equalsIgnoreCase(text)){
 				reportStep("The text: "+sText+" matches with the value :"+text, "PASS");
 			}else{
@@ -250,7 +303,7 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void verifyTextContainsByXpath(String xpath, String text){
 		try{
-			String sText = driver.findElementByXPath(xpath).getText();
+			String sText = driver.findElementByXPath(prop.getProperty(xpath)).getText();
 			if (sText.contains(text)){
 				reportStep("The text: "+sText+" contains the value :"+text, "PASS");
 			}else{
@@ -269,7 +322,7 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void verifyTextById(String id, String text) {
 		try{
-			String sText = driver.findElementById(id).getText();
+			String sText = driver.findElementById(prop.getProperty(id)).getText();
 			if (sText.equalsIgnoreCase(text)){
 				reportStep("The text: "+sText+" matches with the value :"+text, "PASS");
 			}else{
@@ -288,7 +341,7 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void verifyTextContainsById(String id, String text) {
 		try{
-			String sText = driver.findElementById(id).getText();
+			String sText = driver.findElementById(prop.getProperty(id)).getText();
 			if (sText.contains(text)){
 				reportStep("The text: "+sText+" contains the value :"+text, "PASS");
 			}else{
@@ -313,17 +366,31 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	}
 
 	/**
+	 * This method will close the current active browsers
+	 * @author Mithra 
+	 */
+	public void closeBrowser() {
+		try {
+			driver.close();
+		} catch (Exception e) {
+			reportStep("The browser:"+driver.getCapabilities().getBrowserName()+" could not be closed.", "FAIL");
+		}
+
+	}
+
+	
+	/**
 	 * This method will click the element using id as locator
 	 * @param id  The id (locator) of the element to be clicked
 	 * @author Mithra 
 	 */
 	public void clickById(String id) {
 		try{
-			driver.findElement(By.id(id)).click();
-			reportStep("The element with id: "+id+" is clicked.", "PASS");
+			driver.findElement(By.id(prop.getProperty(id))).click();
+			reportStep("The element with id: "+prop.getProperty(id)+" is clicked.", "PASS");
 
 		} catch (Exception e) {
-			reportStep("The element with id: "+id+" could not be clicked.", "FAIL");
+			reportStep("The element with id: "+prop.getProperty(id)+" could not be clicked.", "FAIL");
 		}
 	}
 
@@ -334,10 +401,10 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void clickByClassName(String classVal) {
 		try{
-			driver.findElement(By.className(classVal)).click();
-			reportStep("The element with class Name: "+classVal+" is clicked.", "PASS");
+			driver.findElement(By.className(prop.getProperty(classVal))).click();
+			reportStep("The element with class Name: "+prop.getProperty(classVal)+" is clicked.", "PASS");
 		} catch (Exception e) {
-			reportStep("The element with class Name: "+classVal+" could not be clicked.", "FAIL");
+			reportStep("The element with class Name: "+prop.getProperty(classVal)+" could not be clicked.", "FAIL");
 		}
 	}
 	/**
@@ -347,10 +414,10 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void clickByName(String name) {
 		try{
-			driver.findElement(By.name(name)).click();
-			reportStep("The element with name: "+name+" is clicked.", "PASS");
+			driver.findElement(By.name(prop.getProperty(name))).click();
+			reportStep("The element with name: "+prop.getProperty(name)+" is clicked.", "PASS");
 		} catch (Exception e) {
-			reportStep("The element with name: "+name+" could not be clicked.", "FAIL");
+			reportStep("The element with name: "+prop.getProperty(name)+" could not be clicked.", "FAIL");
 		}
 	}
 
@@ -361,10 +428,10 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void clickByLink(String name) {
 		try{
-			driver.findElement(By.linkText(name)).click();
-			reportStep("The element with link name: "+name+" is clicked.", "PASS");
+			driver.findElement(By.linkText(prop.getProperty(name))).click();
+			reportStep("The element with link name: "+prop.getProperty(name)+" is clicked.", "PASS");
 		} catch (Exception e) {
-			reportStep("The element with link name: "+name+" could not be clicked.", "FAIL");
+			reportStep("The element with link name: "+prop.getProperty(name)+" could not be clicked.", "FAIL");
 		}
 	}
 
@@ -375,10 +442,10 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void clickByXpath(String xpathVal) {
 		try{
-			driver.findElement(By.xpath(xpathVal)).click();
-			reportStep("The element : "+xpathVal+" is clicked.", "PASS");
+			driver.findElement(By.xpath(prop.getProperty(xpathVal))).click();
+			reportStep("The element : "+prop.getProperty(xpathVal)+" is clicked.", "PASS");
 		} catch (Exception e) {
-			reportStep("The element with xpath: "+xpathVal+" could not be clicked.", "FAIL");
+			reportStep("The element with xpath: "+prop.getProperty(xpathVal)+" could not be clicked.", "FAIL");
 		}
 	}
 
@@ -389,10 +456,10 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void mouseOverByXpath(String xpathVal) {
 		try{
-			new Actions(driver).moveToElement(driver.findElement(By.xpath(xpathVal))).build().perform();
-			reportStep("The mouse over by xpath : "+xpathVal+" is performed.", "PASS");
+			new Actions(driver).moveToElement(driver.findElement(By.xpath(prop.getProperty(xpathVal)))).build().perform();
+			reportStep("The mouse over by xpath : "+prop.getProperty(xpathVal)+" is performed.", "PASS");
 		} catch (Exception e) {
-			reportStep("The mouse over by xpath : "+xpathVal+" could not be performed.", "FAIL");
+			reportStep("The mouse over by xpath : "+prop.getProperty(xpathVal)+" could not be performed.", "FAIL");
 		}
 	}
 
@@ -403,10 +470,24 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void mouseOverByLinkText(String linkName) {
 		try{
-			new Actions(driver).moveToElement(driver.findElement(By.linkText(linkName))).build().perform();
-			reportStep("The mouse over by link : "+linkName+" is performed.", "PASS");
+			new Actions(driver).moveToElement(driver.findElement(By.linkText(prop.getProperty(linkName)))).build().perform();
+			reportStep("The mouse over by link : "+prop.getProperty(linkName)+" is performed.", "PASS");
 		} catch (Exception e) {
-			reportStep("The mouse over by link : "+linkName+" could not be performed.", "FAIL");
+			reportStep("The mouse over by link : "+prop.getProperty(linkName)+" could not be performed.", "FAIL");
+		}
+	}
+	
+	/**
+	 * This method will mouse over on the element using xpath as locator
+	 * @param xpathVal  The xpath (locator) of the element to be moused over
+	 * @author Mithra 
+	 */
+	public void doubleClickByXpath(String xpathVal) {
+		try{
+			new Actions(driver).doubleClick(driver.findElement(By.xpath(prop.getProperty(xpathVal)))).build().perform();
+			reportStep("The double click by xpath : "+prop.getProperty(xpathVal)+" is performed.", "PASS");
+		} catch (Exception e) {
+			reportStep("The double click by xpath : "+prop.getProperty(xpathVal)+" could not be performed.", "FAIL");
 		}
 	}
 
@@ -418,9 +499,9 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	public String getTextByXpath(String xpathVal){
 		String bReturn = "";
 		try{
-			return driver.findElement(By.xpath(xpathVal)).getText();
+			return driver.findElement(By.xpath(prop.getProperty(xpathVal))).getText();
 		} catch (Exception e) {
-			reportStep("The element with xpath: "+xpathVal+" could not be found.", "FAIL");
+			reportStep("The element with xpath: "+prop.getProperty(xpathVal)+" could not be found.", "FAIL");
 		}
 		return bReturn; 
 	}
@@ -433,9 +514,9 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	public String getTextById(String idVal) {
 		String bReturn = "";
 		try{
-			return driver.findElementById(idVal).getText();
+			return driver.findElementById(prop.getProperty(idVal)).getText();
 		} catch (Exception e) {
-			reportStep("The element with id: "+idVal+" could not be found.", "FAIL");
+			reportStep("The element with id: "+prop.getProperty(idVal)+" could not be found.", "FAIL");
 		}
 		return bReturn; 
 	}
@@ -449,8 +530,8 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	 */
 	public void selectVisibileTextById(String id, String value) {
 		try{
-			new Select(driver.findElement(By.id(id))).selectByVisibleText(value);;
-			reportStep("The element with id: "+id+" is selected with value :"+value, "PASS");
+			new Select(driver.findElement(By.id(prop.getProperty(id)))).selectByVisibleText(value);;
+			reportStep("The element with id: "+prop.getProperty(id)+" is selected with value :"+value, "PASS");
 		} catch (Exception e) {
 			reportStep("The value: "+value+" could not be selected.", "FAIL");
 		}
@@ -460,8 +541,8 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 
 	public void selectVisibileTextByXPath(String xpath, String value) {
 		try{
-			new Select(driver.findElement(By.xpath(xpath))).selectByVisibleText(value);;
-			reportStep("The element with xpath: "+xpath+" is selected with value :"+value, "PASS");
+			new Select(driver.findElement(By.xpath(prop.getProperty(xpath)))).selectByVisibleText(value);;
+			reportStep("The element with xpath: "+prop.getProperty(xpath)+" is selected with value :"+value, "PASS");
 		} catch (Exception e) {
 			reportStep("The value: "+value+" could not be selected.", "FAIL");
 		}
@@ -469,8 +550,8 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 
 	public void selectIndexById(String id, String value) {
 		try{
-			new Select(driver.findElement(By.id(id))).selectByIndex(Integer.parseInt(value));;
-			reportStep("The element with id: "+id+" is selected with index :"+value, "PASS");
+			new Select(driver.findElement(By.id(prop.getProperty(id)))).selectByIndex(Integer.parseInt(value));;
+			reportStep("The element with id: "+prop.getProperty(id)+" is selected with index :"+value, "PASS");
 		} catch (Exception e) {
 			reportStep("The index: "+value+" could not be selected.", "FAIL");
 		}
@@ -550,6 +631,39 @@ public class GenericWrappers extends Reporter implements Wrappers  {
 	}
 
 
+	public void openNewWindow(String URL) {
+		try {
+			((JavascriptExecutor)driver).executeScript("window.open(arguments[0])",URL);
+		} catch (NoAlertPresentException e) {
+			reportStep("The window could not be open.", "FAIL");
+		} catch (Exception e) {
+			reportStep("The window could not be open.", "FAIL");
+		}
+
+	}
+	
+	public void scrollToElement(WebElement element) {
+		try {
+			  JavascriptExecutor jse = (JavascriptExecutor)driver;
+			    jse.executeScript("arguments[0].scrollIntoView()", element);		} 
+		
+		 catch (Exception e) {
+			reportStep("The scroll is not successfull.", "FAIL");
+		}
+
+	}
+	
+	public void waitForElementVisibilityBXpath(String xpath) {
+		 new WebDriverWait(driver, 60).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(prop.getProperty(xpath))));
+	}
+	
+	public void reportPass(String comments){
+		reportStep("The "+comments+" is PASS", "PASS");		
+	}
+
+	public void reportFail(String comments){
+		reportStep("The "+comments+" is FAIL", "FAIL");		
+	}
 
 }
 

@@ -13,27 +13,27 @@ public class LoginPage extends ProjectSpecificWrappers  {
 		this.driver = driver;
 		this.test = test;
 
-		if(!verifyTitle("Leaftaps - TestLeaf Automation Platform")){
+		if(!verifyTitle("RiskSense")){
 			reportStep("This is not Login Page", "Fail");
 		}
 	}
 	
 	public LoginPage enterUserName(){
-		enterById("username", username);
+		enterByXpath("Login.UserName.Xpath", username);
 		return this;
 	}
 	
 	public LoginPage enterPassword(){
-		enterByName("PASSWORD", password);
+		enterByXpath("Login.Password.Xpath", password);
 		return this;
 		
 	}
 	
-	public HomePage clickLogin(){
+	public GmailLogin clickLogin(){
 /*		WebElement element = driver.findElementByClassName("decorativeSubmit");
 		((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);*/
-		clickByClassName("decorativeSubmit");		
-		return new HomePage(driver, test);
+		clickByClassName("Login.LoginButton.Class");		
+		return new GmailLogin(driver, test);
 	}
 	
 	public LoginPage clickLoginForFailure(){

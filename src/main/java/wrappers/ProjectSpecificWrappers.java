@@ -46,19 +46,19 @@ public class ProjectSpecificWrappers extends GenericWrappers {
 		unloadObjects();
 	}
 	
-	@AfterMethod
+/*	@AfterMethod
 	public void afterMethod(){
 		endTestcase();
 		quitBrowser();
 		
 	}
-	
+*/	
 	@DataProvider(name="fetchData")
 	public Object[][] getData(){
 		return DataInputProvider.getSheet(dataSheetName);		
 	}	
 	
-	public void login(){
+	public void login() throws InterruptedException{
 		
 	}
 	
